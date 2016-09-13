@@ -1,0 +1,41 @@
+#! /bin/bash
+
+profile=~/.db.conf
+
+listDb() {
+    lineNo=1
+    while read LINE
+    do
+        echo -e "\e[31m $lineNo \e[32m $LINE \e[0m"
+        ((lineNo++))
+    done   < $profile
+}
+
+connectDb() {
+    `sed -n "${1}p" $profile`
+}
+
+while getopts "lc:" arg
+do
+    case $arg in 
+        c)
+            connectDb $OPTARG
+            ;;
+        l)
+            listDb
+            ;;
+        \?)
+            echo 'test'
+            exit 1
+            ;;
+        :)
+            echo 'nonon'
+            exit 1
+            ;;
+    esac
+done
+
+if [[ $# < 1 ]]
+then
+    listDb
+fi
