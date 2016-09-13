@@ -1,0 +1,39 @@
+#! /bin/bash
+
+confFile=~/.dev.conf
+
+function usage() {
+    echo -e "\e[33m" 
+    echo "usage   dev -[s|c|l] [1...n]"
+    echo "dev host list:"
+    cat -n $confFile
+    echo -e "\e[0m"
+}
+
+while getopts "ls:c:" arg 
+do 
+    case $arg in
+        "l")
+            usage
+            exit 0
+            ;;
+        "c")
+            `sed -n "${OPTARG}p" $confFile`
+            exit 0
+            ;;
+        "s") 
+            sed -n "${OPTARG}p" $confFile  |cut -d "@" -f 2
+            exit 0
+            ;;
+        ":"|"?"|"*")
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+if [ -n $arg ]
+then
+    usage
+    exit 1
+fi
